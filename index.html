@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBS Arezzo - Kickboxing & Savate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #d32f2f;
+            --secondary-color: #1a237e;
+            --accent-color: #00c853;
+            --dark-bg: #1a1a1a;
+            --light-text: #ffffff;
+            --gray-text: #b0b0b0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #2d2d2d 100%);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #b71c1c 100%);
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            color: #ffeb3b;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Gallery Container */
+        .gallery-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .gallery-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            background: #000;
+        }
+
+        .gallery-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: grab;
+            user-select: none;
+        }
+
+        .gallery-track:active {
+            cursor: grabbing;
+        }
+
+        .gallery-slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .gallery-slide img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Navigation Buttons */
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .gallery-nav:hover {
+            background: var(--primary-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .gallery-nav.prev {
+            left: 20px;
+        }
+
+        .gallery-nav.next {
+            right: 20px;
+        }
+
+        /* Dots Indicators */
+        .gallery-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px 0;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--primary-color);
+            transform: scale(1.3);
+        }
+
+        /* Info Section */
+        .info-section {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, rgba(211, 47, 47, 0.1) 0%, rgba(26, 35, 126, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(211, 47, 47, 0.3);
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card p {
+            color: var(--gray-text);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .icon {
+            font-size: 1.8rem;
+        }
+
+        /* Map Link */
+        .map-link {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #00a040 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 200, 83, 0.3);
+        }
+
+        .map-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 200, 83, 0.5);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #b71c1c 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+            border-top: 2px solid var(--primary-color);
+        }
+
+        footer p {
+            color: var(--gray-text);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .gallery-slide img {
+                height: 300px;
+            }
+
+            .gallery-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .info-card:nth-child(1) { animation-delay: 0.1s; }
+        .info-card:nth-child(2) { animation-delay: 0.2s; }
+        .info-card:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <div>
+                    <h1>🥊 KBS AREZZO</h1>
+                    <p class="subtitle">Kickboxing & Savate</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gallery Section -->
+    <div class="gallery-container">
+        <div class="gallery-wrapper" id="gallery">
+            <div class="gallery-track" id="galleryTrack">
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1200&h=800&fit=crop" alt="Allenamento Kickboxing 1">
+                </div>
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1200&h=800&fit=crop" alt="Allenamento Kickboxing 2">
+                </div>
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&h=800&fit=crop" alt="Allenamento Savate">
+                </div>
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=1200&h=800&fit=crop" alt="Palestra">
+                </div>
+            </div>
+
+            <button class="gallery-nav prev" onclick="moveSlide(-1)">❮</button>
+            <button class="gallery-nav next" onclick="moveSlide(1)">❯</button>
+
+            <div class="gallery-dots" id="dotsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="info-section">
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><span class="icon">📅</span> Orari</h3>
+                <p><strong>Martedì - Giovedì</strong><br>19:30 - 21:00</p>
+            </div>
+
+            <div class="info-card">
+                <h3><span class="icon">📍</span> Dove Siamo</h3>
+                <p><strong>Via Tricca</strong><br>Scuola elementare Aldo Moro<br>Arezzo</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Via+Tricca+Scuola+Aldo+Moro+Arezzo" target="_blank" class="map-link">
+                    🗺️ Apri in Google Maps
+                </a>
+            </div>
+
+            <div class="info-card">
+                <h3><span class="icon">📞</span> Contatti</h3>
+                <p>
+                    <strong>Andrea</strong><br>
+                    📱 <a href="tel:+393463869550" style="color: var(--accent-color); text-decoration: none;">346-3869550</a>
+                </p>
+                <p style="margin-top: 1rem;">
+                    📘 <a href="https://www.facebook.com/search/top?q=Kbs%20Savate%20Kickboxing%20Arezzo" target="_blank" style="color: #4267B2; text-decoration: none;">Facebook: Kbs Savate Kickboxing Arezzo</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2>Pronto a Iniziare?</h2>
+        <p style="font-size: 1.2rem; margin-top: 1rem;">Unisciti a noi per un'esperienza di allenamento unica!</p>
+        <div class="cta-buttons">
+            <a href="tel:+393463869550" class="btn btn-primary">
+                📞 Chiamaci Ora
+            </a>
+            <a href="https://www.facebook.com/search/top?q=Kbs%20Savate%20Kickboxing%20Arezzo" target="_blank" class="btn btn-secondary">
+                📘 Seguici su Facebook
+            </a>
+            <a href="https://www.google.com/maps/search/?api=1&query=Via+Tricca+Scuola+Aldo+Moro+Arezzo" target="_blank" class="btn btn-secondary">
+                🗺️ Come Arrivare
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 KBS Arezzo - Kickboxing & Savate. Tutti i diritti riservati.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Affiliato FIK Toscana</p>
+    </footer>
+
+    <script>
+        // Gallery functionality
+        const track = document.getElementById('galleryTrack');
+        const slides = document.querySelectorAll('.gallery-slide');
+        const dotsContainer = document.getElementById('dotsContainer');
+        let currentSlide = 0;
+        let startX = 0;
+        let isDragging = false;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
+
+        // Create dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        function updateSlide() {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function moveSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = slides.length - 1;
+            if (currentSlide >= slides.length) currentSlide = 0;
+            updateSlide();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
+        // Touch/Mouse events for swipe
+        track.addEventListener('touchstart', touchStart);
+        track.addEventListener('touchmove', touchMove);
+        track.addEventListener('touchend', touchEnd);
+        track.addEventListener('mousedown', touchStart);
+        track.addEventListener('mousemove', touchMove);
+        track.addEventListener('mouseup', touchEnd);
+        track.addEventListener('mouseleave', touchEnd);
+
+        function touchStart(event) {
+            isDragging = true;
+            startX = event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+            track.style.cursor = 'grabbing';
+        }
+
+        function touchMove(event) {
+            if (!isDragging) return;
+            event.preventDefault();
+            const currentX = event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+            const diff = currentX - startX;
+            currentTranslate = prevTranslate + diff;
+        }
+
+        function touchEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            const movedBy = currentTranslate - prevTranslate;
+
+            if (movedBy < -50 && currentSlide < slides.length - 1) {
+                currentSlide++;
+            }
+
+            if (movedBy > 50 && currentSlide > 0) {
+                currentSlide--;
+            }
+
+            updateSlide();
+            prevTranslate = currentTranslate = 0;
+            track.style.cursor = 'grab';
+        }
+
+        // Auto-slide
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateSlide();
+        }, 5000);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') moveSlide(-1);
+            if (e.key === 'ArrowRight') moveSlide(1);
+        });
+    </script>
+</body>
+</html>
